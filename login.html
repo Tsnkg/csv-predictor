@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log in / Sign up</title>
+  <style>
+    /* General reset */
+    body, h1, input, button {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #ffffff;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #000;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .input-phone {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 16px;
+      background: #f8f8f8;
+    }
+
+    .input-phone input {
+      border: none;
+      outline: none;
+      flex: 1;
+      margin-left: 8px;
+      background: transparent;
+      font-size: 16px;
+    }
+
+    .btn {
+      background: #000;
+      color: #fff;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .otp-container {
+      display: none; /* Hidden initially */
+      justify-content: center;
+      gap: 5px;
+      margin: 20px 0;
+    }
+
+    .otp-container input {
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+      text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      color: #aaa;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      border-bottom: 1px solid #ddd;
+      margin: 0 10px;
+    }
+
+    .login-option {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      gap: 10px;
+    }
+
+    .login-option i {
+      font-size: 20px;
+      color: #000;
+    }
+
+    .terms {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #777;
+    }
+
+    .terms a {
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+  <!-- Boxicons CDN for icons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <h1>Log in / Sign up</h1>
+
+    <!-- Phone Input -->
+    <div class="input-group">
+      <div class="input-phone">
+        <span>+91</span>
+        <input type="text" id="phone-input" maxlength="10" placeholder="Enter your phone number" />
+      </div>
+      <button class="btn" id="get-otp-btn">Get OTP</button>
+    </div>
+
+    <!-- OTP Input (Hidden Initially) -->
+    <div class="otp-container" id="otp-container">
+      <input type="text" maxlength="1" class="otp-input" />
+      <input type="text" maxlength="1" class="otp-input" />
+      <input type="text" maxlength="1" class="otp-input" />
+      <input type="text" maxlength="1" class="otp-input" />
+      <input type="text" maxlength="1" class="otp-input" />
+      <input type="text" maxlength="1" class="otp-input" />
+    </div>
+
+    <div class="divider">OR</div>
+
+    <!-- Social Login Options -->
+    <div class="login-option">
+      <i class='bx bxl-google'></i>
+      <span>Continue with Google</span>
+    </div>
+    <div class="login-option">
+      <i class='bx bxl-microsoft'></i>
+      <span>Continue with Microsoft</span>
+    </div>
+    <div class="login-option">
+      <i class='bx bxl-apple'></i>
+      <span>Continue with Apple</span>
+    </div>
+    <br><br><br>
+
+    <div class="terms">
+      By continuing, you agree to our
+      <a href="#">Terms and Conditions</a> and
+      <a href="#">Privacy Policy</a>
+    </div>
+  </div>
+
+  <script>
+    // Show OTP fields when "Get OTP" button is clicked
+    document.getElementById("get-otp-btn").addEventListener("click", function() {
+      const phoneInput = document.getElementById("phone-input").value;
+
+      // Phone number validation
+      const phoneRegex = /^[789]\d{9}$/;
+
+      if (!phoneRegex.test(phoneInput)) {
+        alert("Please enter a valid phone number");
+        return;
+      }
+
+      // Show OTP container
+      document.getElementById("otp-container").style.display = "flex";
+    });
+
+    // Automatically move to the next OTP box
+    const otpInputs = document.querySelectorAll(".otp-input");
+
+    otpInputs.forEach((input, index) => {
+      input.addEventListener("input", (e) => {
+        const currentInput = e.target;
+        const nextInput = otpInputs[index + 1];
+        const prevInput = otpInputs[index - 1];
+
+        // Move to next input if a digit is entered
+        if (currentInput.value.length === 1 && nextInput) {
+          nextInput.focus();
+        }
+
+        // Move to previous input if backspace is pressed
+        currentInput.addEventListener("keydown", (e) => {
+          if (e.key === "Backspace" && currentInput.value.length === 0 && prevInput) {
+            prevInput.focus();
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

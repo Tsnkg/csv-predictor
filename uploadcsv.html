@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Predictor</title>
+    
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #e0e0e0;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 2px solid #000;
+            border-radius: 10px;
+            padding: 10px 15px;
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            background: transparent;
+            flex: 1;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .search-bar i {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .upload-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: transparent;
+            border: 2px solid #000;
+            color: #000;
+            border-radius: 10px;
+            padding: 10px 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-align: center;
+        }
+
+        .upload-btn:hover {
+            background-color: #f4f4f4;
+        }
+
+        .history {
+            font-size: 14px;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .history-item {
+            padding: 8px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .account-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: transparent;
+            border: 2px solid #000;
+            color: #000;
+            border-radius: 10px;
+            padding: 10px 100px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+        }
+
+        .account-btn:hover {
+            background-color: #f4f4f4;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        
+
+        .middle-upload-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            
+            
+        }
+
+        .middle-upload-btn.hidden {
+            display: none; /* Hide button after upload */
+        }
+        h2{
+            margin-top: 200px;
+        }
+    
+
+        .column-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 300px;
+            
+        }
+
+        .column-button {
+            border: 2px solid #000000;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: transparent;
+            transition: background-color 0.3s ease;
+        }
+
+        .column-button:hover {
+            background-color: #f4f4f4;
+        }
+
+        .footer-note {
+            margin-top: 240px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .footer-note.hidden {
+            display: none; /* Hide footer when nav-bar is visible */
+        }
+        /* Navigation Bar - Only in White Area */
+ .nav-bar {
+    display: none; /* Hide navigation bar by default */
+    position: fixed;
+    bottom: 0;
+    left: 290px; /* Same as sidebar width to start after it */
+    width: calc(100% - 290px); /* Full width minus sidebar */
+    background-color: #cdccccf0; /* Light grey background */
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    box-sizing: border-box;
+}
+
+
+
+.nav-button {
+    font-size: 24px; /* Size of the arrow icons */
+    color: black; /* Icon color */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.nav-button:hover {
+    color: #666; /* Darker grey on hover */
+}
+
+
+
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h1>CSV Predictor</h1>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" placeholder="Search" id="searchBar">
+            <i class='bx bx-search' style="font-size: 6;"></i>
+        </div>
+
+        <!-- Upload Button -->
+         
+        <div class="upload-btn" onclick="document.getElementById('csvFileInput').click()">
+            Upload New CSV
+            <input type="file" id="csvFileInput" accept=".csv" style="display: none;" onchange="processCSV(event)">
+        </div>
+
+        <!-- File History -->
+        <div class="history" id="fileHistory">
+            <strong>History</strong>
+            <!-- Uploaded files will appear here -->
+        </div>
+    </div>
+
+    <!-- Account Button -->
+    <button class="account-btn" >
+        Account
+    </button>
+</div>
+
+    <!-- Main Content -->
+    <div class="main">
+        
+        <!-- Middle Upload Button -->
+        <h2 id="title">Start making data-driven decisions effortlessly</h2> 
+        <button class="middle-upload-btn" id="middleUploadButton" onclick="document.getElementById('csvFileInput').click()">
+            Upload CSV File
+            <i class='bx bx-upload'></i>
+        </button>
+
+        <!-- CSV Columns Display -->
+        <h2 id="columnHeaderTitle" style="display: none;">CSV Column List</h2>
+        <div class="column-list" id="columnList"></div>
+        <div class="footer-note" id="footerNote">
+            The file must be in .csv format, with the first row containing headers (column names), and each column having consistent data types.
+        </div>
+        
+    </div>
+    <!-- Navigation Bar -->
+<div class="nav-bar">
+    <a href="" class="nav-button">
+        <i></i>
+    </a>
+    <a href="column.html" class="nav-button">
+        <i class='bx bx-right-arrow-alt'></i>
+    </a>
+</div>
+
+
+
+<script>
+    const fileHistoryKey = 'csvFileHistory'; // Key for local storage
+
+// Function to process CSV file
+function processCSV(event) {
+    const file = event.target.files[0];
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const content = e.target.result;
+            displayColumns(content, file.name);
+            showNavigationBar(); // Show navigation bar after file upload
+            saveFileHistory(file.name); // Save file name to history
+        };
+        reader.readAsText(file);
+    }
+}
+
+// Function to save file history to local storage
+function saveFileHistory(fileName) {
+    let history = JSON.parse(localStorage.getItem(fileHistoryKey)) || [];
+    if (!history.includes(fileName)) {
+        history.push(fileName);
+        localStorage.setItem(fileHistoryKey, JSON.stringify(history));
+    }
+    updateFileHistoryDisplay(history);
+}
+
+// Function to update file history display
+function updateFileHistoryDisplay(history) {
+    const historyDiv = document.getElementById('fileHistory');
+    historyDiv.innerHTML = '<strong>History</strong>'; // Clear previous content and add title
+
+    history.forEach(fileName => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        historyItem.textContent = fileName;
+        historyDiv.appendChild(historyItem);
+    });
+}
+
+// Function to retrieve and display file history on page load
+function loadFileHistory() {
+    const history = JSON.parse(localStorage.getItem(fileHistoryKey)) || [];
+    updateFileHistoryDisplay(history);
+}
+
+// Function to display columns and hide middle button
+function displayColumns(csvContent, fileName) {
+    const rows = csvContent.split('\n');
+    const columnList = document.getElementById('columnList');
+    const middleButton = document.getElementById('middleUploadButton');
+    const columnHeaderTitle = document.getElementById('columnHeaderTitle');
+
+    if (rows.length > 0) {
+        const headers = rows[0].split(','); // Extract CSV headers
+        columnList.innerHTML = ''; // Clear previous content
+
+        // Show headers as buttons
+        headers.forEach(column => {
+            const button = document.createElement('div');
+            button.className = 'column-button';
+            button.textContent = column.trim();
+            columnList.appendChild(button);
+        });
+
+        // Hide Middle Upload Button
+        middleButton.classList.add('hidden');
+        columnHeaderTitle.style.display = 'block';
+        footerNote.classList.add('hidden');
+        columnHeaderTitle.style.display = 'block';
+    
+    }
+}
+
+// Function to show the navigation bar
+function showNavigationBar() {
+    const navBar = document.querySelector('.nav-bar');
+    navBar.style.display = 'flex'; // Show the navigation bar
+}
+
+// Load file history when the page loads
+document.addEventListener('DOMContentLoaded', loadFileHistory);
+// Function to switch sidebar to Account view
+function showAccountView() {
+    const sidebar = document.querySelector('.sidebar');
+
+    // Replace sidebar content with the Account view
+    sidebar.innerHTML = `
+        <button class="back-button" onclick="reloadSidebar()">
+            <i class='bx bx-arrow-back'></i>
+        </button>
+        <h2>Account</h2>
+        <div class="account-details">
+            <div class="profile-picture">
+                <img src="default-avatar.png" alt="Profile Picture" style="width: 80px; height: 80px; border-radius: 50%;">
+            </div>
+            <div class="profile-name">Abishek</div>
+            <div class="profile-phone">+91 6379152820</div>
+            <button class="google-connect-button">Add your Google Account</button>
+            <button class="sign-out-button">Sign Out</button>
+        </div>
+    `;
+}
+
+// Function to reload the original sidebar
+function reloadSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+
+    // Original sidebar content
+    sidebar.innerHTML = `
+        <h1>CSV Predictor</h1>
+        <div class="search-bar">
+            <input type="text" placeholder="Search" id="searchBar">
+            <i class='bx bx-search'></i>
+        </div>
+        <div class="upload-btn" onclick="document.getElementById('csvFileInput').click()">
+            Upload New CSV
+            <input type="file" id="csvFileInput" accept=".csv" style="display: none;" onchange="processCSV(event)">
+        </div>
+        <div class="history" id="fileHistory">
+            <strong>History</strong>
+        </div>
+        <button class="account-btn" onclick="showAccountView()">Account</button>
+    `;
+    loadFileHistory(); // Reload file history if necessary
+}
+
+// Add an event listener to handle the account button click
+const accountBtn = document.querySelector('.account-btn');
+accountBtn.addEventListener('click', showAccountView);
+
+</script>
+
+</body>
+</html>
